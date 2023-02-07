@@ -6,4 +6,4 @@ from backend.models.assignment import Assignment
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = "__all__"
+        exclude = ('student',)

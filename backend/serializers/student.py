@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from backend.models.assignment import Assignment
-from backend.models.course import Course
 from backend.models.student import Student
+from backend.serializers.assignment import AssignmentSerializer
+from backend.serializers.course import CourseStudentSerializer
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -11,35 +11,9 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class StudentCourseSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(read_only=True, many=True)
-
-    class Meta:
-        model = Course
-        fields = ['student', 'name']
-
-    def to_representation(self, instance):
-        rep = super(StudentCourseSerializer, self).to_representation(instance)
-
-        student_pk = self.context['request'].parser_context.get('kwargs').get('pk')
-        student = Student.objects.get(pk=student_pk)
-        avg_grade = instance.get_avg_grade(student)
-        progress = instance.get_progress(student)
-
-        rep["name"] = f"{rep['name']} - Progress: {progress} - Average Grade: {avg_grade}"
-        #assignments = []
-
-        # for pk in rep["assignments"]:
-        #     assignment = Assignment.objects.get(pk=pk)
-        #     assignments.append(f"{assignment.description} - {assignment.grade}")
-        # rep["assignments"] = assignments
-
-        return rep
+class StudentCourseSerializer(serializers.Serializer):
+    courses = CourseStudentSerializer(many=True)
 
 
-class StudentAssignmentSerializer(serializers.ModelSerializer):
-    student = StudentSerializer
-
-    class Meta:
-        model = Assignment
-        fields = ['description', 'grade', 'feedback']
+class StudentAssignmentSerializer(serializers.Serializer):
+    assignments = AssignmentSerializer(many=True)

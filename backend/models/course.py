@@ -13,14 +13,3 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_avg_grade(self, student):
-        grades = student.assignments.filter(course=self).values_list('grade', flat=True)
-        grades = sum(grade for grade in grades if grade is not None)
-        return grades/30
-
-    def get_progress(self, student):
-        grades = student.assignments.filter(course=self).values_list('grade', flat=True)
-        grades = list(grade for grade in grades if grade is not None)
-        percentage = str((len(grades)/3)*100)
-        return percentage+'%'

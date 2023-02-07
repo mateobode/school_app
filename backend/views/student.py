@@ -1,8 +1,8 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from backend.models.assignment import Assignment
 from backend.models.student import Student
-from backend.serializers.assignment import AssignmentSerializer
 from backend.serializers.student import StudentSerializer, StudentCourseSerializer, StudentAssignmentSerializer
 
 
@@ -10,28 +10,38 @@ class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
+    @action(detail=True)
+    def get_courses(self, request, pk):
+        student_instance = self.get_object()
+        serializer = StudentCourseSerializer(student_instance)
+        return Response(serializer.data)
 
-class StudentCourseViewSet(viewsets.ModelViewSet):
-    serializer_class = StudentCourseSerializer
+    @action(detail=True)
+    def get_assignments(self, request, pk):
+        student_instance = self.get_object()
+        serializer = StudentAssignmentSerializer(student_instance)
+        return Response(serializer.data)
 
-    def get_queryset(self):
-        pk = self.kwargs['pk']
-        students = Student.objects.filter(pk=pk)
+    @action(detail=True)
+    def get_progress(self, request, pk):
+        student_instance = self.get_object()
+        serializer = StudentAssignmentSerializer(student_instance)
+        courses = serializer.instance.courses.all()
+        student_grades = {}
+        for course in courses:
+            grades = serializer.instance.assignments.filter(course=course).values_list('grade', flat=True)
+            grades = list(grade for grade in grades if grade is not None)
+            student_grades[course.name] = len(grades)/3 * 100
+        return Response(student_grades)
 
-        for student in students:
-            courses_student = student.courses.filter()
-
-        return courses_student
-
-
-class StudentAssignmentViewSet(viewsets.ModelViewSet):
-    serializer_class = StudentAssignmentSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs['pk']
-        students = Student.objects.filter(pk=pk)
-
-        for student in students:
-            student_assignment = student.assignments.filter()
-
-        return student_assignment
+    @action(detail=True)
+    def get_avg_grade(self, request, pk):
+        student_instance = self.get_object()
+        serializer = StudentAssignmentSerializer(student_instance)
+        courses = serializer.instance.courses.all()
+        student_grades = {}
+        for course in courses:
+            grades = serializer.instance.assignments.filter(course=course).values_list('grade', flat=True)
+            grades = sum(grade for grade in grades if grade is not None)
+            student_grades[course.name] = grades/3
+        return Response(student_grades)
