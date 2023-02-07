@@ -1,14 +1,17 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.models.student import Student
 from backend.serializers.student import StudentSerializer, StudentCourseSerializer, StudentAssignmentSerializer
+from school_app.permissions import HasStudentPermission
 
 
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = [IsAuthenticated, HasStudentPermission]
 
     @action(detail=True)
     def get_courses(self, request, pk):
