@@ -7,7 +7,7 @@ from backend.models.student import Student
 from backend.serializers.assignment import AssignmentDeadlineSerializer
 from backend.serializers.student import StudentSerializer, StudentCourseSerializer, StudentAssignmentSerializer, \
     RegisterCourseSerializer
-from school_app.permissions import HasStudentPermission, HasTeacherPermission
+from school_app.permissions import HasStudentPermission
 
 
 class StudentViewSet(viewsets.ModelViewSet):
@@ -63,7 +63,7 @@ class StudentViewSet(viewsets.ModelViewSet):
         serializer = AssignmentDeadlineSerializer(student_instance.assignments.filter(grade=None), many=True)
         return Response({"assignments": serializer.data})
 
-    @action(detail=True, methods=['get', 'post'])
+    @action(detail=True, methods=['post'])
     def register_new_courses(self, request, pk):
         student_instance = self.get_object()
         serializer = RegisterCourseSerializer(data=request.data)

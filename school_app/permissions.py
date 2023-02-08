@@ -4,10 +4,10 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 class HasStudentPermission(BasePermission):
 
     def has_permission(self, request, view):
-        return hasattr(request.user, 'student')
+        return hasattr(request.user, 'student') or request.user.is_staff
 
     def has_object_permission(self, request, view, obj):
-        return obj.student_user == request.user
+        return obj.student_user == request.user or request.user.is_staff
 
 
 class HasTeacherPermission(BasePermission):
