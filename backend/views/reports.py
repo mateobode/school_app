@@ -21,6 +21,6 @@ def export_student_grades(request):
             "grade": assignment.grade
         })
 
-    response = HttpResponse( pd.DataFrame(data).to_csv(), content_type='text/csv')
+    response = HttpResponse(pd.DataFrame(data).to_csv(), content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=grades_report.csv'
     return response

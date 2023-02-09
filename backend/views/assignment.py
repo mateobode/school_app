@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from backend.models.assignment import Assignment
 from backend.serializers.assignment import AssignmentSerializer
-from school_app.permissions import HasAssignmentPermission, HasTeacherPermission
+from school_app.permissions import HasAssignmentPermission
 
 
 class AssignmentViewSet(viewsets.ModelViewSet):
