@@ -1,12 +1,14 @@
 from django.http import HttpResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 import pandas as pd
+from rest_framework.permissions import IsAdminUser
 
 from backend.models.student import Student
 from backend.models.assignment import Assignment
 
 
 @api_view(['get'])
+@permission_classes((IsAdminUser,))
 def export_student_grades(request):
 
     if pk := request.GET.get('pk'):
@@ -29,6 +31,7 @@ def export_student_grades(request):
 
 
 @api_view(['get'])
+@permission_classes((IsAdminUser,))
 def get_course_avg(request):
     students = Student.objects.all()
     student_grades = {}
