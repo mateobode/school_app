@@ -21,7 +21,7 @@ class HasTeacherPermission(BasePermission):
 
 class HasAssignmentPermission(BasePermission):
     def has_permission(self, request, view):
-        if request.method in SAFE_METHODS and hasattr(request.user, 'student'):
+        if hasattr(request.user, "student") and (request.method in SAFE_METHODS or view.action == "submit_assignment"):
             return True
 
         return hasattr(request.user, 'teacher')

@@ -12,6 +12,7 @@ class Assignment(models.Model):
     feedback = models.CharField(max_length=250, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
+    file = models.FileField(null=True)
 
     def __str__(self):
         return self.description

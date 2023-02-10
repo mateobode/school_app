@@ -21,3 +21,9 @@ class AssignmentDeadlineSerializer(serializers.ModelSerializer):
     def get_deadline(self, obj):
         deadline = obj.end_date - date.today()
         return deadline.days
+
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
+        fields = ['file']
