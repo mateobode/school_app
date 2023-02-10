@@ -21,7 +21,10 @@ class HasTeacherPermission(BasePermission):
 
 class HasAssignmentPermission(BasePermission):
     def has_permission(self, request, view):
-        return request.method in SAFE_METHODS and (hasattr(request.user, 'teacher') or hasattr(request.user, 'student'))
+        if request.method in SAFE_METHODS and hasattr(request.user, 'student'):
+            return True
+
+        return hasattr(request.user, 'teacher')
 
     def has_object_permission(self, request, view, obj):
         if hasattr(request.user, "teacher") and request.user.teacher in obj.course.teachers.all():
