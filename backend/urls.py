@@ -1,3 +1,5 @@
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from backend.views.assignment import AssignmentViewSet
 from backend.views.course import CourseViewSet
 from backend.views.student import StudentViewSet
@@ -19,6 +21,10 @@ router.register(r'admin-portal', AdminViewSet, basename='admin-portal')
 urlpatterns = [
     path('grade-report/', export_student_grades),
     path('course-report/', get_course_avg),
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
 ]
 
 urlpatterns += router.urls
